@@ -1,0 +1,247 @@
+/**
+ * Box AI Search - Frontend Styles
+ *
+ * @package BoxAISearch
+ * @since   1.0.0
+ */
+
+/* Search Container */
+.bas-search-container {
+	max-width: 800px;
+	margin: 20px auto;
+	padding: 20px;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/* Search Form */
+.bas-search-form {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 20px;
+}
+
+.bas-search-input {
+	flex: 1;
+	padding: 12px 16px;
+	font-size: 16px;
+	border: 2px solid #ddd;
+	border-radius: 4px;
+	transition: border-color 0.3s ease;
+}
+
+.bas-search-input:focus {
+	outline: none;
+	border-color: #0073aa;
+}
+
+.bas-search-button {
+	padding: 12px 24px;
+	font-size: 16px;
+	font-weight: 600;
+	color: #fff;
+	background-color: #0073aa;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.bas-search-button:hover {
+	background-color: #005177;
+}
+
+.bas-search-button:disabled {
+	background-color: #ccc;
+	cursor: not-allowed;
+}
+
+/* Loading State */
+.bas-search-loading {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 15px;
+	background-color: #f0f0f0;
+	border-radius: 4px;
+	margin-bottom: 20px;
+}
+
+.bas-spinner {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	border: 3px solid rgba(0, 0, 0, 0.1);
+	border-radius: 50%;
+	border-top-color: #0073aa;
+	animation: bas-spin 0.8s linear infinite;
+}
+
+@keyframes bas-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* Results Container */
+.bas-results-container {
+	padding: 20px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+/* Answer Section */
+.bas-answer {
+	margin-bottom: 30px;
+	padding-bottom: 20px;
+	border-bottom: 2px solid #f0f0f0;
+}
+
+.bas-answer-title {
+	margin: 0 0 15px 0;
+	font-size: 20px;
+	font-weight: 700;
+	color: #333;
+}
+
+.bas-answer-text {
+	margin-bottom: 10px;
+	line-height: 1.6;
+	font-size: 16px;
+	color: #555;
+}
+
+.bas-answer-meta {
+	font-size: 13px;
+	color: #999;
+}
+
+/* Citations Section */
+.bas-citations {
+	margin-bottom: 30px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.bas-citations-title {
+	margin: 0 0 15px 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: #333;
+}
+
+.bas-citations-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.bas-citation {
+	margin-bottom: 15px;
+	padding: 15px;
+	background-color: #f9f9f9;
+	border-left: 4px solid #0073aa;
+	border-radius: 4px;
+}
+
+.bas-citation:last-child {
+	margin-bottom: 0;
+}
+
+.bas-citation-content {
+	margin-bottom: 8px;
+	line-height: 1.5;
+	font-size: 14px;
+	color: #555;
+}
+
+.bas-citation-type {
+	font-size: 12px;
+	font-weight: 600;
+	color: #0073aa;
+	text-transform: uppercase;
+}
+
+/* Items Section */
+.bas-items {
+	margin-bottom: 0;
+}
+
+.bas-items-title {
+	margin: 0 0 15px 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: #333;
+}
+
+.bas-items-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.bas-item {
+	padding: 10px 0;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.bas-item:last-child {
+	border-bottom: none;
+}
+
+.bas-item-name {
+	font-size: 15px;
+	font-weight: 500;
+	color: #333;
+}
+
+.bas-item-type {
+	font-size: 13px;
+	color: #999;
+}
+
+/* Error and No Results States */
+.bas-error,
+.bas-no-results {
+	padding: 20px;
+	text-align: center;
+	background-color: #fff3cd;
+	border: 1px solid #ffc107;
+	border-radius: 4px;
+	color: #856404;
+}
+
+.bas-error {
+	background-color: #f8d7da;
+	border-color: #f5c6cb;
+	color: #721c24;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.bas-search-container {
+		padding: 15px;
+	}
+
+	.bas-search-form {
+		flex-direction: column;
+	}
+
+	.bas-search-input,
+	.bas-search-button {
+		width: 100%;
+	}
+
+	.bas-results-container {
+		padding: 15px;
+	}
+
+	.bas-answer-title {
+		font-size: 18px;
+	}
+
+	.bas-citations-title,
+	.bas-items-title {
+		font-size: 16px;
+	}
+}
