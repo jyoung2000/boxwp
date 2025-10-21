@@ -153,7 +153,7 @@ class Cache {
 	 * For database transients, it's more complex and resource-intensive.
 	 *
 	 * @since  1.0.0
-	 * @return bool True on success, false on failure.
+	 * @return array|WP_Error Array with count on success, WP_Error on failure.
 	 */
 	public function clear_all() {
 		global $wpdb;
@@ -168,12 +168,23 @@ class Cache {
 			)
 		);
 
+		// Check for database error.
+		if ( false === $result ) {
+			return new \WP_Error(
+				'bas_cache_clear_failed',
+				__( 'Database error while clearing cache.', 'box-ai-search' )
+			);
+		}
+
 		// Clear object cache if available.
 		if ( function_exists( 'wp_cache_flush' ) ) {
 			wp_cache_delete_group( 'bas_cache' );
 		}
 
-		return false !== $result;
+		// Return the number of items deleted.
+		return array(
+			'count' => (int) $result,
+		);
 	}
 
 	/**

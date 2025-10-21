@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Autoloader now correctly maps `BoxAISearch\PublicInterface\*` to `public/`
   - Resolves fatal error on plugin activation
   - Updated composer.json PSR-4 mapping for consistency
+- **Cache**: Fixed "Clear Cache" button error
+  - Changed Cache::clear_all() to return array with count or WP_Error
+  - Improved error handling for database failures
+  - Added user-friendly message when cache is already empty
+  - Shows count of cleared items on success (singular/plural)
+  - Properly handles edge cases (0 items, database errors)
 
 ### Added
 

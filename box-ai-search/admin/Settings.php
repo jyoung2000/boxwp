@@ -601,14 +601,26 @@ class Settings {
 		$cache  = new Cache();
 		$result = $cache->clear_all();
 
-		if ( ! $result ) {
+		if ( is_wp_error( $result ) ) {
 			wp_send_json_error( array(
-				'message' => __( 'Failed to clear cache.', 'box-ai-search' ),
+				'message' => $result->get_error_message(),
+			) );
+		}
+
+		$count = isset( $result['count'] ) ? $result['count'] : 0;
+
+		if ( 0 === $count ) {
+			wp_send_json_success( array(
+				'message' => __( 'Cache is already empty. Nothing to clear.', 'box-ai-search' ),
 			) );
 		}
 
 		wp_send_json_success( array(
-			'message' => __( 'Cache cleared successfully!', 'box-ai-search' ),
+			'message' => sprintf(
+				/* translators: %d: Number of cache items cleared */
+				_n( 'Successfully cleared %d cache item.', 'Successfully cleared %d cache items.', $count, 'box-ai-search' ),
+				$count
+			),
 		) );
 	}
 
