@@ -46,6 +46,7 @@ class Settings {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 		add_action( 'wp_ajax_bas_test_connection', array( $this, 'ajax_test_connection' ) );
 		add_action( 'wp_ajax_bas_clear_cache', array( $this, 'ajax_clear_cache' ) );
+		add_action( 'wp_ajax_bas_upload_json', array( $this, 'ajax_upload_json' ) );
 	}
 
 	/**
@@ -291,6 +292,27 @@ class Settings {
 			echo esc_html__( 'Warning: Encryption is not available. Please ensure OpenSSL is installed and BAS_ENCRYPTION_KEY is defined in wp-config.php.', 'box-ai-search' );
 			echo '</p></div>';
 		}
+
+		// JSON Upload Section.
+		?>
+		<div class="bas-json-upload-section" style="margin: 20px 0; padding: 15px; background: #f0f7ff; border-left: 4px solid #0073aa;">
+			<h4 style="margin-top: 0;"><?php esc_html_e( 'Quick Setup: Upload Box Configuration JSON', 'box-ai-search' ); ?></h4>
+			<p><?php esc_html_e( 'Upload the JSON configuration file downloaded from Box Developer Console to automatically populate all credentials.', 'box-ai-search' ); ?></p>
+			<div class="bas-json-upload-form">
+				<input type="file" id="bas-json-file" accept=".json" style="margin-right: 10px;" />
+				<button type="button" id="bas-upload-json" class="button button-secondary">
+					<?php esc_html_e( 'Upload & Import Credentials', 'box-ai-search' ); ?>
+				</button>
+				<span class="spinner" id="bas-json-spinner" style="float: none; margin: 0 10px;"></span>
+			</div>
+			<div id="bas-json-result" style="margin-top: 10px;"></div>
+			<p class="description">
+				<?php esc_html_e( 'This will automatically fill in Client ID, Client Secret, Enterprise ID, and JWT credentials (if present in the file).', 'box-ai-search' ); ?>
+			</p>
+		</div>
+
+		<p><strong><?php esc_html_e( 'Or enter credentials manually:', 'box-ai-search' ); ?></strong></p>
+		<?php
 	}
 
 	/**
@@ -587,6 +609,152 @@ class Settings {
 
 		wp_send_json_success( array(
 			'message' => __( 'Cache cleared successfully!', 'box-ai-search' ),
+		) );
+	}
+
+	/**
+	 * AJAX handler for uploading Box JSON configuration.
+	 *
+	 * @since 1.0.0
+	 */
+	public function ajax_upload_json() {
+		check_ajax_referer( 'bas_admin_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array(
+				'message' => __( 'You do not have permission to perform this action.', 'box-ai-search' ),
+			) );
+		}
+
+		// Check if file was uploaded.
+		if ( empty( $_FILES['json_file'] ) ) {
+			wp_send_json_error( array(
+				'message' => __( 'No file uploaded.', 'box-ai-search' ),
+			) );
+		}
+
+		$file = $_FILES['json_file'];
+
+		// Validate file type.
+		$file_ext = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
+		if ( 'json' !== $file_ext ) {
+			wp_send_json_error( array(
+				'message' => __( 'Please upload a JSON file.', 'box-ai-search' ),
+			) );
+		}
+
+		// Validate file size (max 1MB).
+		if ( $file['size'] > 1048576 ) {
+			wp_send_json_error( array(
+				'message' => __( 'File is too large. Maximum size is 1MB.', 'box-ai-search' ),
+			) );
+		}
+
+		// Read file content.
+		$json_content = file_get_contents( $file['tmp_name'] );
+		if ( false === $json_content ) {
+			wp_send_json_error( array(
+				'message' => __( 'Failed to read file.', 'box-ai-search' ),
+			) );
+		}
+
+		// Parse JSON.
+		$config = json_decode( $json_content, true );
+		if ( null === $config ) {
+			wp_send_json_error( array(
+				'message' => __( 'Invalid JSON format.', 'box-ai-search' ),
+			) );
+		}
+
+		// Extract and encrypt credentials.
+		$credentials = array();
+
+		// Client ID.
+		if ( isset( $config['boxAppSettings']['clientID'] ) ) {
+			$encrypted = $this->encryption->encrypt( $config['boxAppSettings']['clientID'] );
+			if ( ! is_wp_error( $encrypted ) ) {
+				update_option( 'bas_box_client_id', $encrypted );
+				$credentials['client_id'] = true;
+			}
+		}
+
+		// Client Secret.
+		if ( isset( $config['boxAppSettings']['clientSecret'] ) ) {
+			$encrypted = $this->encryption->encrypt( $config['boxAppSettings']['clientSecret'] );
+			if ( ! is_wp_error( $encrypted ) ) {
+				update_option( 'bas_box_client_secret', $encrypted );
+				$credentials['client_secret'] = true;
+			}
+		}
+
+		// Enterprise ID.
+		if ( isset( $config['enterpriseID'] ) && ! empty( $config['enterpriseID'] ) ) {
+			$encrypted = $this->encryption->encrypt( $config['enterpriseID'] );
+			if ( ! is_wp_error( $encrypted ) ) {
+				update_option( 'bas_box_enterprise_id', $encrypted );
+				$credentials['enterprise_id'] = true;
+			}
+		}
+
+		// Public Key ID.
+		if ( isset( $config['boxAppSettings']['appAuth']['publicKeyID'] ) && ! empty( $config['boxAppSettings']['appAuth']['publicKeyID'] ) ) {
+			update_option( 'bas_box_public_key_id', sanitize_text_field( $config['boxAppSettings']['appAuth']['publicKeyID'] ) );
+			$credentials['public_key_id'] = true;
+		}
+
+		// Private Key.
+		if ( isset( $config['boxAppSettings']['appAuth']['privateKey'] ) && ! empty( $config['boxAppSettings']['appAuth']['privateKey'] ) ) {
+			$encrypted = $this->encryption->encrypt( $config['boxAppSettings']['appAuth']['privateKey'] );
+			if ( ! is_wp_error( $encrypted ) ) {
+				update_option( 'bas_box_private_key', $encrypted );
+				$credentials['private_key'] = true;
+			}
+		}
+
+		// Passphrase.
+		if ( isset( $config['boxAppSettings']['appAuth']['passphrase'] ) && ! empty( $config['boxAppSettings']['appAuth']['passphrase'] ) ) {
+			$encrypted = $this->encryption->encrypt( $config['boxAppSettings']['appAuth']['passphrase'] );
+			if ( ! is_wp_error( $encrypted ) ) {
+				update_option( 'bas_box_passphrase', $encrypted );
+				$credentials['passphrase'] = true;
+			}
+		}
+
+		// Check if any credentials were saved.
+		if ( empty( $credentials ) ) {
+			wp_send_json_error( array(
+				'message' => __( 'No valid credentials found in JSON file.', 'box-ai-search' ),
+			) );
+		}
+
+		// Build success message.
+		$imported = array();
+		if ( isset( $credentials['client_id'] ) ) {
+			$imported[] = __( 'Client ID', 'box-ai-search' );
+		}
+		if ( isset( $credentials['client_secret'] ) ) {
+			$imported[] = __( 'Client Secret', 'box-ai-search' );
+		}
+		if ( isset( $credentials['enterprise_id'] ) ) {
+			$imported[] = __( 'Enterprise ID', 'box-ai-search' );
+		}
+		if ( isset( $credentials['public_key_id'] ) ) {
+			$imported[] = __( 'Public Key ID', 'box-ai-search' );
+		}
+		if ( isset( $credentials['private_key'] ) ) {
+			$imported[] = __( 'Private Key', 'box-ai-search' );
+		}
+		if ( isset( $credentials['passphrase'] ) ) {
+			$imported[] = __( 'Passphrase', 'box-ai-search' );
+		}
+
+		wp_send_json_success( array(
+			'message'  => sprintf(
+				/* translators: %s: List of imported credentials */
+				__( 'Successfully imported: %s', 'box-ai-search' ),
+				implode( ', ', $imported )
+			),
+			'imported' => $credentials,
 		) );
 	}
 }

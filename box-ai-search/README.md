@@ -5,6 +5,7 @@ A secure WordPress plugin that integrates Box AI's semantic document search, ena
 ## Features
 
 - **🧙 Interactive Setup Wizard**: Guided frontend configuration with automatic encryption key generation
+- **📤 JSON Config Upload**: One-click Box credentials import from JSON file
 - **🔍 Semantic Search**: Leverage Box AI's powerful semantic search capabilities
 - **⚡ Easy Integration**: Simple `[box_ai_search]` shortcode for quick deployment
 - **🚀 Real-time Results**: AJAX-powered search with 300ms debouncing for optimal performance
@@ -84,8 +85,19 @@ echo base64_encode( openssl_random_pseudo_bytes( 32 ) );
 
 **2. Configure Box API Credentials**
 
+**Quick Method: Upload JSON File**
+
 1. Navigate to **Settings > Box AI Search**
-2. Enter your Box API credentials:
+2. In the "Quick Setup" section, click **Choose File** and select your Box configuration JSON file
+3. Click **Upload & Import Credentials**
+4. Wait for automatic import and page refresh
+5. Click **Test Box API Connection** to verify
+
+**Manual Method: Enter Credentials**
+
+1. Navigate to **Settings > Box AI Search**
+2. Scroll to the manual credentials section
+3. Enter your Box API credentials:
    - **Client ID**: Your Box application Client ID
    - **Client Secret**: Your Box application Client Secret
    - **Enterprise ID**: (Optional, for JWT authentication)
@@ -93,8 +105,8 @@ echo base64_encode( openssl_random_pseudo_bytes( 32 ) );
    - **Private Key**: (Optional, for JWT authentication)
    - **Private Key Passphrase**: (Optional, if applicable)
 
-3. Click **Save Settings**
-4. Click **Test Box API Connection** to verify credentials
+4. Click **Save Settings**
+5. Click **Test Box API Connection** to verify credentials
 
 **3. Add Shortcode**
 

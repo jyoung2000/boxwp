@@ -40,6 +40,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Mobile-responsive wizard interface
   - Clear error messaging and troubleshooting
 
+#### JSON Configuration Upload
+- **New**: One-click Box JSON configuration file upload
+  - Upload Box Developer Console JSON file directly in settings
+  - Automatically extracts and encrypts all credentials
+  - Supports both JWT and Client Credentials authentication
+  - Real-time import status with detailed feedback
+  - Auto-populates Client ID, Client Secret, Enterprise ID, and JWT credentials
+  - File validation (JSON format, max 1MB)
+  - Secure file handling with immediate deletion after processing
+  - Page auto-refresh after successful import
+  - Highlighted upload section at top of credentials form
+- **AJAX Improvements**:
+  - Fixed document.ready wrapping for proper event binding
+  - Changed to delegated event handlers for dynamic content
+  - Improved error handling and user feedback
+  - Added FormData support for file uploads
+
 #### Core Features
 - Box AI semantic document search integration via `/2.0/ai/ask` endpoint
 - `[box_ai_search]` shortcode for easy deployment
