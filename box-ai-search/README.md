@@ -22,15 +22,32 @@ A secure WordPress plugin that integrates Box AI's semantic document search, ena
 
 ## Installation
 
-### 1. Upload Plugin
+### Option 1: Install from ZIP (Recommended)
 
-Upload the `box-ai-search` directory to `/wp-content/plugins/`, or install through WordPress admin panel.
+1. **Build the ZIP file**:
+   ```bash
+   cd box-ai-search
+   ./quick-build.sh
+   ```
+   This creates `dist/box-ai-search-1.0.0.zip`
 
-### 2. Activate Plugin
+2. **Upload to WordPress**:
+   - Go to **Plugins > Add New**
+   - Click **Upload Plugin**
+   - Choose the ZIP file
+   - Click **Install Now**
+   - Click **Activate Plugin**
 
-Activate "Box AI Search" through the 'Plugins' menu in WordPress.
+See [BUILD.md](BUILD.md) for detailed build instructions.
 
-### 3. Configure Encryption Key
+### Option 2: Manual Installation
+
+1. Upload the `box-ai-search` directory to `/wp-content/plugins/`
+2. Activate "Box AI Search" through the 'Plugins' menu in WordPress
+
+### After Installation
+
+#### 1. Configure Encryption Key
 
 Add the following constant to your `wp-config.php` file (before "That's all, stop editing!" line):
 
@@ -46,7 +63,7 @@ Alternatively, generate a key programmatically:
 echo base64_encode( openssl_random_pseudo_bytes( 32 ) );
 ```
 
-### 4. Configure Box API Credentials
+#### 2. Configure Box API Credentials
 
 1. Navigate to **Settings > Box AI Search**
 2. Enter your Box API credentials:
@@ -60,7 +77,7 @@ echo base64_encode( openssl_random_pseudo_bytes( 32 ) );
 3. Click **Save Settings**
 4. Click **Test Box API Connection** to verify credentials
 
-### 5. Add Shortcode
+#### 3. Add Shortcode
 
 Add the `[box_ai_search]` shortcode to any page or post where you want the search interface to appear.
 
