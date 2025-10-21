@@ -458,6 +458,26 @@ class Settings {
 		<div class="wrap">
 			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
+			<?php
+			// Show prominent warning if encryption is not available.
+			if ( ! $this->encryption->is_encryption_available() ) :
+				?>
+				<div class="notice notice-error is-dismissible">
+					<h2><?php esc_html_e( 'Encryption Not Configured', 'box-ai-search' ); ?></h2>
+					<p><strong><?php esc_html_e( 'The plugin cannot function without encryption being configured.', 'box-ai-search' ); ?></strong></p>
+					<p><?php esc_html_e( 'You must set up the encryption key before you can upload credentials, test connections, or use any plugin features.', 'box-ai-search' ); ?></p>
+					<p>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=box-ai-search-setup' ) ); ?>" class="button button-primary button-large">
+							<?php esc_html_e( 'Launch Setup Wizard to Configure Encryption', 'box-ai-search' ); ?>
+						</a>
+					</p>
+					<p><?php esc_html_e( 'Or manually add this to your wp-config.php file:', 'box-ai-search' ); ?></p>
+					<pre style="background: #f0f0f0; padding: 10px; border-left: 4px solid #dc3232;">define( 'BAS_ENCRYPTION_KEY', '<?php echo esc_html( \BoxAISearch\Encryption::generate_key() ); ?>' );</pre>
+				</div>
+				<?php
+			endif;
+			?>
+
 			<?php settings_errors( 'bas_settings' ); ?>
 
 			<form action="options.php" method="post">

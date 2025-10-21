@@ -121,11 +121,13 @@
 						location.reload();
 					}, 2000);
 				} else {
-					$result.html('<div class="notice notice-error inline"><p>' + response.data.message + '</p></div>');
+					$result.html('<div class="notice notice-error inline"><p><strong>Error:</strong> ' + response.data.message + '</p></div>');
 				}
 			},
-			error: function() {
-				$result.html('<div class="notice notice-error inline"><p>An error occurred while uploading the file.</p></div>');
+			error: function(jqXHR, textStatus, errorThrown) {
+				console.error('AJAX Error:', textStatus, errorThrown);
+				console.log('Response:', jqXHR.responseText);
+				$result.html('<div class="notice notice-error inline"><p><strong>Error:</strong> An error occurred while uploading the file. Check browser console for details.</p></div>');
 			},
 			complete: function() {
 				$button.prop('disabled', false);
