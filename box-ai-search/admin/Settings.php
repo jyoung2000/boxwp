@@ -673,69 +673,102 @@ class Settings {
 		// Parse JSON.
 		$config = json_decode( $json_content, true );
 		if ( null === $config ) {
+			$json_error = json_last_error_msg();
 			wp_send_json_error( array(
-				'message' => __( 'Invalid JSON format.', 'box-ai-search' ),
+				'message' => sprintf(
+					/* translators: %s: JSON error message */
+					__( 'Invalid JSON format: %s', 'box-ai-search' ),
+					$json_error
+				),
+			) );
+		}
+
+		// Validate Box JSON structure.
+		if ( ! isset( $config['boxAppSettings'] ) ) {
+			wp_send_json_error( array(
+				'message' => __( 'Invalid Box configuration file. Missing "boxAppSettings" section.', 'box-ai-search' ),
 			) );
 		}
 
 		// Extract and encrypt credentials.
 		$credentials = array();
+		$errors      = array();
 
 		// Client ID.
-		if ( isset( $config['boxAppSettings']['clientID'] ) ) {
-			$encrypted = $this->encryption->encrypt( $config['boxAppSettings']['clientID'] );
+		if ( isset( $config['boxAppSettings']['clientID'] ) && ! empty( $config['boxAppSettings']['clientID'] ) ) {
+			$client_id = trim( $config['boxAppSettings']['clientID'] );
+			$encrypted = $this->encryption->encrypt( $client_id );
 			if ( ! is_wp_error( $encrypted ) ) {
 				update_option( 'bas_box_client_id', $encrypted );
-				$credentials['client_id'] = true;
+				$credentials['client_id'] = $client_id;
+			} else {
+				$errors[] = 'Client ID encryption failed';
 			}
 		}
 
 		// Client Secret.
-		if ( isset( $config['boxAppSettings']['clientSecret'] ) ) {
-			$encrypted = $this->encryption->encrypt( $config['boxAppSettings']['clientSecret'] );
+		if ( isset( $config['boxAppSettings']['clientSecret'] ) && ! empty( $config['boxAppSettings']['clientSecret'] ) ) {
+			$client_secret = trim( $config['boxAppSettings']['clientSecret'] );
+			$encrypted     = $this->encryption->encrypt( $client_secret );
 			if ( ! is_wp_error( $encrypted ) ) {
 				update_option( 'bas_box_client_secret', $encrypted );
-				$credentials['client_secret'] = true;
+				$credentials['client_secret'] = $client_secret;
+			} else {
+				$errors[] = 'Client Secret encryption failed';
 			}
 		}
 
 		// Enterprise ID.
 		if ( isset( $config['enterpriseID'] ) && ! empty( $config['enterpriseID'] ) ) {
-			$encrypted = $this->encryption->encrypt( $config['enterpriseID'] );
+			$enterprise_id = trim( $config['enterpriseID'] );
+			$encrypted     = $this->encryption->encrypt( $enterprise_id );
 			if ( ! is_wp_error( $encrypted ) ) {
 				update_option( 'bas_box_enterprise_id', $encrypted );
-				$credentials['enterprise_id'] = true;
+				$credentials['enterprise_id'] = $enterprise_id;
+			} else {
+				$errors[] = 'Enterprise ID encryption failed';
 			}
 		}
 
-		// Public Key ID.
+		// Public Key ID (for JWT).
 		if ( isset( $config['boxAppSettings']['appAuth']['publicKeyID'] ) && ! empty( $config['boxAppSettings']['appAuth']['publicKeyID'] ) ) {
-			update_option( 'bas_box_public_key_id', sanitize_text_field( $config['boxAppSettings']['appAuth']['publicKeyID'] ) );
-			$credentials['public_key_id'] = true;
+			$public_key_id = trim( $config['boxAppSettings']['appAuth']['publicKeyID'] );
+			update_option( 'bas_box_public_key_id', sanitize_text_field( $public_key_id ) );
+			$credentials['public_key_id'] = $public_key_id;
 		}
 
-		// Private Key.
+		// Private Key (for JWT).
 		if ( isset( $config['boxAppSettings']['appAuth']['privateKey'] ) && ! empty( $config['boxAppSettings']['appAuth']['privateKey'] ) ) {
-			$encrypted = $this->encryption->encrypt( $config['boxAppSettings']['appAuth']['privateKey'] );
+			$private_key = trim( $config['boxAppSettings']['appAuth']['privateKey'] );
+			$encrypted   = $this->encryption->encrypt( $private_key );
 			if ( ! is_wp_error( $encrypted ) ) {
 				update_option( 'bas_box_private_key', $encrypted );
-				$credentials['private_key'] = true;
+				$credentials['private_key'] = 'present';
+			} else {
+				$errors[] = 'Private Key encryption failed';
 			}
 		}
 
-		// Passphrase.
+		// Passphrase (for JWT).
 		if ( isset( $config['boxAppSettings']['appAuth']['passphrase'] ) && ! empty( $config['boxAppSettings']['appAuth']['passphrase'] ) ) {
-			$encrypted = $this->encryption->encrypt( $config['boxAppSettings']['appAuth']['passphrase'] );
+			$passphrase = trim( $config['boxAppSettings']['appAuth']['passphrase'] );
+			$encrypted  = $this->encryption->encrypt( $passphrase );
 			if ( ! is_wp_error( $encrypted ) ) {
 				update_option( 'bas_box_passphrase', $encrypted );
-				$credentials['passphrase'] = true;
+				$credentials['passphrase'] = 'present';
+			} else {
+				$errors[] = 'Passphrase encryption failed';
 			}
 		}
 
 		// Check if any credentials were saved.
 		if ( empty( $credentials ) ) {
+			$error_message = __( 'No valid credentials found in JSON file.', 'box-ai-search' );
+			if ( ! empty( $errors ) ) {
+				$error_message .= ' ' . __( 'Errors:', 'box-ai-search' ) . ' ' . implode( ', ', $errors );
+			}
 			wp_send_json_error( array(
-				'message' => __( 'No valid credentials found in JSON file.', 'box-ai-search' ),
+				'message' => $error_message,
 			) );
 		}
 
@@ -760,13 +793,25 @@ class Settings {
 			$imported[] = __( 'Passphrase', 'box-ai-search' );
 		}
 
+		$success_message = sprintf(
+			/* translators: %s: List of imported credentials */
+			__( 'Successfully imported: %s', 'box-ai-search' ),
+			implode( ', ', $imported )
+		);
+
+		// Add warning about encryption errors if any occurred.
+		if ( ! empty( $errors ) ) {
+			$success_message .= ' ' . sprintf(
+				/* translators: %s: List of errors */
+				__( 'Warning - Some items failed: %s', 'box-ai-search' ),
+				implode( ', ', $errors )
+			);
+		}
+
 		wp_send_json_success( array(
-			'message'  => sprintf(
-				/* translators: %s: List of imported credentials */
-				__( 'Successfully imported: %s', 'box-ai-search' ),
-				implode( ', ', $imported )
-			),
+			'message'  => $success_message,
 			'imported' => $credentials,
+			'errors'   => $errors,
 		) );
 	}
 }
