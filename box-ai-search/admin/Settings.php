@@ -484,6 +484,15 @@ class Settings {
 			<code>[box_ai_search]</code>
 
 			<h3><?php esc_html_e( 'Setup Instructions', 'box-ai-search' ); ?></h3>
+
+			<p>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=box-ai-search-setup' ) ); ?>" class="button button-secondary">
+					<?php esc_html_e( 'Launch Setup Wizard', 'box-ai-search' ); ?>
+				</a>
+			</p>
+
+			<p><?php esc_html_e( 'Or follow these manual setup steps:', 'box-ai-search' ); ?></p>
+
 			<ol>
 				<li><?php esc_html_e( 'Add the following to your wp-config.php file:', 'box-ai-search' ); ?>
 					<pre>define( 'BAS_ENCRYPTION_KEY', '<?php echo esc_html( \BoxAISearch\Encryption::generate_key() ); ?>' );</pre>

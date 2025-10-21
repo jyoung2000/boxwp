@@ -1,0 +1,305 @@
+/**
+ * Box AI Search - Setup Wizard Styles
+ *
+ * @package BoxAISearch
+ * @since   1.0.0
+ */
+
+/* Wizard Container */
+.bas-wizard-wrap {
+	max-width: 900px;
+	margin: 20px auto;
+}
+
+.bas-wizard-container {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	padding: 30px;
+	margin-top: 20px;
+}
+
+/* Progress Steps */
+.bas-wizard-steps {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 40px;
+	position: relative;
+}
+
+.bas-wizard-steps::before {
+	content: '';
+	position: absolute;
+	top: 20px;
+	left: 50px;
+	right: 50px;
+	height: 2px;
+	background: #ddd;
+	z-index: 0;
+}
+
+.bas-wizard-step {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex: 1;
+	position: relative;
+	z-index: 1;
+}
+
+.bas-step-number {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: #ddd;
+	color: #666;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	font-size: 16px;
+	margin-bottom: 8px;
+	transition: all 0.3s ease;
+}
+
+.bas-wizard-step.active .bas-step-number {
+	background: #0073aa;
+	color: #fff;
+}
+
+.bas-wizard-step.completed .bas-step-number {
+	background: #46b450;
+	color: #fff;
+}
+
+.bas-wizard-step.completed .bas-step-number::before {
+	content: '✓';
+}
+
+.bas-step-label {
+	font-size: 13px;
+	color: #666;
+	text-align: center;
+}
+
+.bas-wizard-step.active .bas-step-label {
+	color: #0073aa;
+	font-weight: 600;
+}
+
+/* Wizard Content */
+.bas-wizard-content {
+	min-height: 400px;
+}
+
+.bas-wizard-content h2 {
+	margin-top: 0;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #e5e5e5;
+	color: #23282d;
+}
+
+.bas-wizard-content h3 {
+	color: #23282d;
+	margin-top: 25px;
+	margin-bottom: 15px;
+}
+
+.bas-wizard-section {
+	margin: 25px 0;
+	padding: 20px;
+	background: #f9f9f9;
+	border-left: 4px solid #0073aa;
+}
+
+/* Code Block */
+.bas-code-block {
+	position: relative;
+	background: #2c3e50;
+	color: #ecf0f1;
+	padding: 15px 60px 15px 15px;
+	border-radius: 4px;
+	margin: 15px 0;
+	font-family: 'Courier New', Courier, monospace;
+	overflow-x: auto;
+}
+
+.bas-code-block code {
+	display: block;
+	white-space: pre-wrap;
+	word-break: break-all;
+	color: #ecf0f1;
+	background: transparent;
+}
+
+.bas-copy-btn {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background: #0073aa !important;
+	color: #fff !important;
+	border: none !important;
+	cursor: pointer;
+	transition: background 0.3s ease;
+}
+
+.bas-copy-btn:hover {
+	background: #005177 !important;
+}
+
+.bas-copy-btn.copied {
+	background: #46b450 !important;
+}
+
+/* Buttons */
+.bas-wizard-content .button-hero {
+	padding: 12px 24px;
+	height: auto;
+	line-height: 1.5;
+	font-size: 16px;
+}
+
+.bas-next-step,
+.bas-prev-step {
+	margin-right: 10px;
+}
+
+/* Loading State */
+.bas-loading {
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+.bas-loading::after {
+	content: '';
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	border: 2px solid #0073aa;
+	border-top-color: transparent;
+	border-radius: 50%;
+	animation: bas-spin 0.6s linear infinite;
+	margin-left: 8px;
+	vertical-align: middle;
+}
+
+@keyframes bas-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* Success/Error Messages */
+.bas-message {
+	padding: 12px;
+	margin: 15px 0;
+	border-radius: 4px;
+}
+
+.bas-message.success {
+	background: #ecf7ed;
+	border-left: 4px solid #46b450;
+	color: #1e4620;
+}
+
+.bas-message.error {
+	background: #f9e9e9;
+	border-left: 4px solid #dc3232;
+	color: #4f1010;
+}
+
+/* Admin Notice Customization */
+.bas-setup-notice {
+	border-left-color: #0073aa;
+}
+
+.bas-setup-notice p:first-child {
+	margin-top: 0;
+}
+
+.bas-setup-notice p:last-child {
+	margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+	.bas-wizard-container {
+		padding: 20px 15px;
+	}
+
+	.bas-wizard-steps {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.bas-wizard-steps::before {
+		display: none;
+	}
+
+	.bas-wizard-step {
+		flex-direction: row;
+		width: 100%;
+		margin-bottom: 15px;
+	}
+
+	.bas-step-number {
+		margin-right: 15px;
+		margin-bottom: 0;
+	}
+
+	.bas-step-label {
+		text-align: left;
+	}
+
+	.bas-code-block {
+		padding: 15px;
+		padding-right: 15px;
+	}
+
+	.bas-copy-btn {
+		position: static;
+		display: block;
+		width: 100%;
+		margin-top: 10px;
+	}
+}
+
+/* Ordered List Styling */
+.bas-wizard-content ol {
+	counter-reset: wizard-counter;
+	list-style: none;
+	padding-left: 0;
+}
+
+.bas-wizard-content ol li {
+	counter-increment: wizard-counter;
+	margin-bottom: 20px;
+	padding-left: 40px;
+	position: relative;
+}
+
+.bas-wizard-content ol li::before {
+	content: counter(wizard-counter);
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 28px;
+	height: 28px;
+	background: #0073aa;
+	color: #fff;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+/* Unordered List */
+.bas-wizard-content ul {
+	padding-left: 20px;
+}
+
+.bas-wizard-content ul li {
+	margin-bottom: 10px;
+}

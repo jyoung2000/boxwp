@@ -16,6 +16,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Setup Wizard
+- **New**: Interactive setup wizard for easy frontend configuration
+  - Automatic encryption key generation
+  - Auto-configuration attempts to write to wp-config.php if permissions allow
+  - Manual configuration with copy-to-clipboard functionality
+  - Step-by-step guided setup process
+  - Admin notice for incomplete setup
+  - Visual progress tracking through setup steps
+  - Link to wizard from settings page
+- **Setup Wizard Features**:
+  - Check for OpenSSL availability
+  - Generate secure AES-256 encryption keys
+  - Automatic wp-config.php modification (when file is writable)
+  - One-click copy to clipboard for manual setup
+  - Direct links to Box Developer Console
+  - Integrated Box credentials configuration
+  - Setup completion confirmation
+- **User Experience**:
+  - Dismissible setup notice
+  - Skip wizard option
+  - Accessible from Settings > Box AI Search
+  - Mobile-responsive wizard interface
+  - Clear error messaging and troubleshooting
+
 #### Core Features
 - Box AI semantic document search integration via `/2.0/ai/ask` endpoint
 - `[box_ai_search]` shortcode for easy deployment

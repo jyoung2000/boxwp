@@ -12,6 +12,7 @@
 namespace BoxAISearch;
 
 use BoxAISearch\Admin\Settings;
+use BoxAISearch\Admin\SetupWizard;
 use BoxAISearch\PublicInterface\Shortcode;
 
 /**
@@ -97,6 +98,9 @@ class Plugin {
 	 * @access private
 	 */
 	private function define_admin_hooks() {
+		// Initialize setup wizard.
+		new SetupWizard();
+
 		// Initialize settings page.
 		new Settings();
 

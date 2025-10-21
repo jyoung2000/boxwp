@@ -4,14 +4,15 @@ A secure WordPress plugin that integrates Box AI's semantic document search, ena
 
 ## Features
 
-- **Semantic Search**: Leverage Box AI's powerful semantic search capabilities
-- **Easy Integration**: Simple `[box_ai_search]` shortcode for quick deployment
-- **Real-time Results**: AJAX-powered search with 300ms debouncing for optimal performance
-- **Military-Grade Encryption**: AES-256-CTR encryption for all API credentials
-- **Smart Caching**: Aggressive caching with WordPress Transients (1-hour default, configurable)
-- **Responsive Design**: Mobile-friendly search interface
-- **Security First**: Implements WordPress security best practices (nonces, sanitization, escaping)
-- **Performance Optimized**: Assets loaded only on pages with shortcode, <500ms for cached queries
+- **🧙 Interactive Setup Wizard**: Guided frontend configuration with automatic encryption key generation
+- **🔍 Semantic Search**: Leverage Box AI's powerful semantic search capabilities
+- **⚡ Easy Integration**: Simple `[box_ai_search]` shortcode for quick deployment
+- **🚀 Real-time Results**: AJAX-powered search with 300ms debouncing for optimal performance
+- **🔐 Military-Grade Encryption**: AES-256-CTR encryption for all API credentials
+- **💾 Smart Caching**: Aggressive caching with WordPress Transients (1-hour default, configurable)
+- **📱 Responsive Design**: Mobile-friendly search interface
+- **🛡️ Security First**: Implements WordPress security best practices (nonces, sanitization, escaping)
+- **⚙️ Performance Optimized**: Assets loaded only on pages with shortcode, <500ms for cached queries
 
 ## Requirements
 
@@ -47,7 +48,25 @@ See [BUILD.md](BUILD.md) for detailed build instructions.
 
 ### After Installation
 
-#### 1. Configure Encryption Key
+**Recommended: Use the Setup Wizard!**
+
+After activating the plugin, you'll see a setup notice. Click **"Start Setup Wizard"** for a guided configuration experience, or navigate to the wizard manually:
+
+- **Admin > Box AI Search Setup** (from the notice)
+- **Settings > Box AI Search** then click "Launch Setup Wizard"
+
+The wizard will:
+1. ✅ Generate encryption key automatically
+2. ✅ Attempt to configure wp-config.php (if writable)
+3. ✅ Provide copy-paste instructions (if manual setup needed)
+4. ✅ Guide you through Box credentials setup
+5. ✅ Verify your configuration
+
+#### Manual Setup (Alternative)
+
+If you prefer manual configuration:
+
+**1. Configure Encryption Key**
 
 Add the following constant to your `wp-config.php` file (before "That's all, stop editing!" line):
 
@@ -63,7 +82,7 @@ Alternatively, generate a key programmatically:
 echo base64_encode( openssl_random_pseudo_bytes( 32 ) );
 ```
 
-#### 2. Configure Box API Credentials
+**2. Configure Box API Credentials**
 
 1. Navigate to **Settings > Box AI Search**
 2. Enter your Box API credentials:
@@ -77,7 +96,7 @@ echo base64_encode( openssl_random_pseudo_bytes( 32 ) );
 3. Click **Save Settings**
 4. Click **Test Box API Connection** to verify credentials
 
-#### 3. Add Shortcode
+**3. Add Shortcode**
 
 Add the `[box_ai_search]` shortcode to any page or post where you want the search interface to appear.
 
