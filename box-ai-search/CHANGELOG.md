@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2025-01-XX
 
+### Fixed
+- **Critical**: Fixed autoloader to properly load classes from `admin/` and `public/` directories
+  - Autoloader now correctly maps `BoxAISearch\Admin\*` to `admin/`
+  - Autoloader now correctly maps `BoxAISearch\PublicInterface\*` to `public/`
+  - Resolves fatal error on plugin activation
+  - Updated composer.json PSR-4 mapping for consistency
+
 ### Added
 
 #### Core Features

@@ -30,6 +30,7 @@ coverage/
 *.zip
 build/
 dist/
+test-plugin.sh
 
 # Logs
 *.log

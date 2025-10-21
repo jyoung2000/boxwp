@@ -58,9 +58,6 @@ function bas_autoloader( $class ) {
 	// Project-specific namespace prefix.
 	$prefix = 'BoxAISearch\\';
 
-	// Base directory for the namespace prefix.
-	$base_dir = BAS_PLUGIN_DIR . 'includes/';
-
 	// Does the class use the namespace prefix?
 	$len = strlen( $prefix );
 	if ( 0 !== strncmp( $prefix, $class, $len ) ) {
@@ -70,8 +67,27 @@ function bas_autoloader( $class ) {
 	// Get the relative class name.
 	$relative_class = substr( $class, $len );
 
-	// Replace namespace separators with directory separators.
-	$file = $base_dir . str_replace( '\\', '/', $relative_class ) . '.php';
+	// Namespace to directory mapping.
+	$namespace_map = array(
+		'Admin\\'          => 'admin/',
+		'PublicInterface\\' => 'public/',
+	);
+
+	// Check if class is in a mapped namespace.
+	$file = null;
+	foreach ( $namespace_map as $namespace => $dir ) {
+		if ( 0 === strncmp( $namespace, $relative_class, strlen( $namespace ) ) ) {
+			// Remove the sub-namespace prefix.
+			$class_file = substr( $relative_class, strlen( $namespace ) );
+			$file       = BAS_PLUGIN_DIR . $dir . str_replace( '\\', '/', $class_file ) . '.php';
+			break;
+		}
+	}
+
+	// If not in mapped namespace, assume it's in includes/.
+	if ( null === $file ) {
+		$file = BAS_PLUGIN_DIR . 'includes/' . str_replace( '\\', '/', $relative_class ) . '.php';
+	}
 
 	// If the file exists, require it.
 	if ( file_exists( $file ) ) {

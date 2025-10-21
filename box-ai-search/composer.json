@@ -26,7 +26,9 @@
     },
     "autoload": {
         "psr-4": {
-            "BoxAISearch\\": "includes/"
+            "BoxAISearch\\": "includes/",
+            "BoxAISearch\\Admin\\": "admin/",
+            "BoxAISearch\\PublicInterface\\": "public/"
         }
     },
     "autoload-dev": {
